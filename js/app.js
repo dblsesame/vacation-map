@@ -49,7 +49,7 @@ var ViewModel = function () {
 	var self = this;
 
 	self.points = ko.observableArray([]);
-	self.search = ko.observable();
+	self.search = ko.observable("");
 	// var infoWindow = new google.maps.InfoWindow({map:map});
 	// var myLatLng = {lat:21.783093, lng:-71.764755};
 	// infoWindow.setPosition(myLatLng);
@@ -62,6 +62,11 @@ var ViewModel = function () {
 	    	self.points.push(new Point(poi));
 	    });
 	};
+	self.filteredArray = ko.computed(function(){
+		return self.points().filter(function(p){
+			return (p.name.toLowerCase().indexOf(self.search().toLowerCase()) > -1);
+		});
+	}, this);
     //marker.setMap(map);
 };
 
@@ -75,7 +80,7 @@ ko.applyBindings(vm);
 // list of locations
 function initMap(data) {
 	myMap = new google.maps.Map(document.getElementById('map'), {
-		center: {lat:21.780565, lng:-71.939691},
+		center: {lat:21.850565, lng:-72.039691},
 		zoom: 10});
 	vm.initPoints();
 };

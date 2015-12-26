@@ -10,6 +10,10 @@
     <! this id will be used in initMap() the callback for google map api -->
     <div id="map"></div>
     <div id="list">
+        <input class="search" type="search" placeholder="Filter List" data-bind="textInput: search" />
+        <ul data-bind="foreach: filteredArray">
+          <li data-bind="text: name"></li>
+        </ul>
     </div>
     <script src="js/lib/jquery-2.1.4.min.js"></script>
     <script src="js/lib/knockout-3.4.0.js"></script>
