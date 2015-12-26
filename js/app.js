@@ -35,7 +35,7 @@ var poiList = [
 
 var Point = function (data) {
 	var self = this;
-	self.maker = new google.maps.Marker({
+	self.marker = new google.maps.Marker({
 	    		position: {lat:data.lat, lng:data.lng},
 	    		title: data.name,
 	    		map:myMap
@@ -66,7 +66,29 @@ var ViewModel = function () {
 		return self.points().filter(function(p){
 			return (p.name.toLowerCase().indexOf(self.search().toLowerCase()) > -1);
 		});
-	}, this);
+	}, this).extend({ rateLimit: 50 });
+	// self.filteredArray = self.points().filter(function(p){
+	// 	return (p.name.toLowerCase().indexOf(self.search().toLowerCase()) > -1);
+	// });
+	// self.filteredArray.subscribe(function(changes) {
+	// 	console.log(changes);
+	// },null,"arrayChange");
+	self.filteredArray.subscribe(function(newValue){
+		
+		var changes = ko.utils.compareArrays(self.points(), newValue);
+		console.log(changes); 
+		//changes.status - retained or deleted 
+		//remove marker for deleted
+		changes.forEach(function(c){
+			if (c.status === "deleted") {
+				c.value.marker.setMap(null);
+			}
+			else {
+				c.value.marker.setMap(myMap);
+			}
+
+		});
+	});
     //marker.setMap(map);
 };
 
