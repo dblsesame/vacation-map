@@ -44,20 +44,25 @@ var Point = function (data) {
 	
 	self.marker.addListener('click', function() {
 		myMap.setZoom(15);
-		myMap.setCenter(self.marker.getPosition());
+		myMap.panTo(self.marker.getPosition());
 		searchWiki(self);
 		searchStreetView(self);
-		
+		searchFourSquare(self);
+
 		var content = '<div id="content">'+
       		'<div id="siteNotice">'+
       		'</div>'+
       		'<h3 id="heading" class="heading">'+
-      		self.name+'</h1>';
+      		self.name+'</h3>';
       	if (self.svImg) {
       		content += '<img src="'+self.svImg+'">';
       	};
 		if (self.wikiItems && self.wikiItems.length>0) {
 			content += self.wikiItems[0];
+		};
+		console.log(self.fourSqrItems);
+		if (self.fourSqrItems && self.fourSqrItems.length>0) {
+			content += self.fourSqrItems[0];
 		};
 		mvm.infoWindow.setContent(content);
 		console.log(content);
@@ -123,7 +128,7 @@ function searchWiki(poi) {
     $.ajax(wikipediaUrl, 
         {
             dataType: "jsonp",
-            jsonpCallback: "handleWikiResp",
+            jsonpCallback: "handleResp",
             success: function (data) {
             	console.log("in success");
                 var items = [];
@@ -143,7 +148,7 @@ function searchWiki(poi) {
 
 };
 
-function handleWikiResp(){
+function handleResp(){
 
 };
 function searchStreetView(poi) {
@@ -153,6 +158,36 @@ function searchStreetView(poi) {
     streetviewUrl+="&key=AIzaSyBj2cupFih8gYKU3QPbBc8lnfeiAaJqGAU";
     poi.svImg = streetviewUrl;
 };
+
+function searchFourSquare(poi) {
+	var apiUrl="https://api.foursquare.com/v2/venues/search?";
+	apiUrl += "ll="+poi.lat+","+poi.lng;
+	apiUrl += "&limit=1";
+	apiUrl += "&client_id=3UXOGK5DZSPYKKQ1GSQ2V4G0HNWP3RPR2GEYWKRJEZPR3GF1&client_secret=DP2GBAPXJVKIGKTIYDXJLYMU4IKXPKX3FE2L51QCTHJHIVAB&v=20151228";
+	$.ajax(apiUrl, 
+        {
+            dataType: "jsonp",
+            jsonpCallback: "handleResp",
+            success: function (data) {
+            	console.log("in success");
+            	console.log(data);
+                var items = [];
+                var v = data.response.venues;
+                if (!v) {
+                	return
+                };
+                for (var i=0; i<v.length; i++) {
+                    items.push('<li> <a href="'+
+                        v[i].url +'">'+
+                        v[i].name+"</a><p>"+
+                        v[i].contact.formattedPhone+"</p></li>");
+                };
+                poi.fourSqrItems = items;
+                console.log (poi.fourSqrItems);
+            }
+        });
+};
+
 var mvm = new ViewModel();
 ko.applyBindings(mvm);
 
