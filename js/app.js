@@ -1,5 +1,8 @@
+//globals 
+
 var myMap = myMap || {};
 
+//initial list of point of interest
 var poiList = [
 	{
 		name: "Beaches Turks & Caicos Resort Villages & Spa",
@@ -60,12 +63,12 @@ var Point = function (data) {
 		if (self.wikiItems && self.wikiItems.length>0) {
 			content += self.wikiItems[0];
 		};
-		console.log(self.fourSqrItems);
+		//console.log(self.fourSqrItems);
 		if (self.fourSqrItems && self.fourSqrItems.length>0) {
 			content += self.fourSqrItems[0];
 		};
 		mvm.infoWindow.setContent(content);
-		console.log(content);
+		//console.log(content);
 		mvm.infoWindow.open(myMap,self.marker);
 	});
 	self.lat = data.lat;
@@ -89,11 +92,11 @@ var ViewModel = function () {
 	};
 	
 	self.showList = function () {
-		console.log("in showList");
+		//console.log("in showList");
 		self.openDrawer(true);
 	};
 	self.hideList = function () {
-		console.log("in hideList");
+		//console.log("in hideList");
 		self.openDrawer(false);
 	};
 
@@ -119,7 +122,7 @@ var ViewModel = function () {
 
 		});
 	});
-    //marker.setMap(map);
+    
     self.selectItem = function(poi) {
     	//console.log("in selectItem")
     	google.maps.event.trigger(poi.marker, 'click');
@@ -140,7 +143,7 @@ function searchWiki(poi) {
             dataType: "jsonp",
             jsonpCallback: "handleResp",
             success: function (data) {
-            	console.log("in success");
+            	//console.log("in success");
                 var items = [];
                 // data from opensearch search
                 var titles = data[1];
@@ -203,10 +206,6 @@ var mvm = new ViewModel();
 ko.applyBindings(mvm);
 
 //callback for google map api
-//to do: move parameter to data model
-// center location geocode
-// zoom level (the larger values means higer resolution)
-// list of locations
 function initMap(data) {
 	myMap = new google.maps.Map(document.getElementById('map'), {
 		center: {lat:21.850565, lng:-72.039691},
