@@ -8,13 +8,21 @@
   </head>
   <body>
     <! this id will be used in initMap() the callback for google map api -->
-    <div id="map"></div>
-    <div id="list">
+    <div id="list" data-bind="css: {open: openDrawer}">
         <input class="search" type="search" placeholder="Filter List" data-bind="textInput: search" />
         <ul data-bind="foreach: filteredArray">
           <li data-bind="text: name, click: $parent.selectItem"></li>
         </ul>
     </div>
+    <main class="light_blue" data-bind="click: hideList, clickBubble: false">
+      <a id="menu" data-bind="click: showList, clickBubble: false">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M2 6h20v3H2zm0 5h20v3H2zm0 5h20v3H2z"/>
+        </svg>
+      </a>
+      <div id="map"></div>
+    </main>
+
     <script src="js/lib/jquery-2.1.4.min.js"></script>
     <script src="js/lib/knockout-3.4.0.js"></script>
     <! todo: hide the key-->

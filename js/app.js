@@ -75,7 +75,7 @@ var Point = function (data) {
 
 var ViewModel = function () {
 	var self = this;
-
+	self.openDrawer = ko.observable(false);
 	self.points = ko.observableArray([]);
 	self.search = ko.observable("");
 	self.infoWindow = {}; //keep only one infowindow
@@ -87,6 +87,16 @@ var ViewModel = function () {
 	    	self.points.push(new Point(poi));
 	    });
 	};
+	
+	self.showList = function () {
+		console.log("in showList");
+		self.openDrawer(true);
+	};
+	self.hideList = function () {
+		console.log("in hideList");
+		self.openDrawer(false);
+	};
+
 	self.filteredArray = ko.computed(function(){
 		return self.points().filter(function(p){
 			return (p.name.toLowerCase().indexOf(self.search().toLowerCase()) > -1);
@@ -111,7 +121,7 @@ var ViewModel = function () {
 	});
     //marker.setMap(map);
     self.selectItem = function(poi) {
-    	console.log("in selectItem")
+    	//console.log("in selectItem")
     	google.maps.event.trigger(poi.marker, 'click');
   	};
 
@@ -169,13 +179,14 @@ function searchFourSquare(poi) {
             dataType: "jsonp",
             jsonpCallback: "handleResp",
             success: function (data) {
-            	console.log("in success");
-            	console.log(data);
+            	// console.log("in success");
+            	// console.log(data);
                 var items = [];
-                var v = data.response.venues;
-                if (!v) {
-                	return
+                if (! data.response || ! data.response.venues) {
+                	return;
                 };
+                var v = data.response.venues;
+
                 for (var i=0; i<v.length; i++) {
                     items.push('<li> <a href="'+
                         v[i].url +'">'+
